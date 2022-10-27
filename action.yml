@@ -1,0 +1,28 @@
+name: 'asdf composite'
+description: 'optional setup of asdf with caching'
+outputs:
+  asdf-dir:
+    description: "dir where asdf does its thing"
+    value: ${{ steps.asdf-env.outputs.asdf-dir }}
+runs:
+  using: "composite"
+  steps:
+    - name: asdf-setup
+      # see https://github.com/asdf-vm/actions/pull/467
+      uses: aeddi/asdf-actions/setup@681862213369d8d868be8a2a7d6040c4d63027db
+      with:
+        skip_install: true
+    - name: asdf-env
+      run:
+        echo "asdf-dir=$(echo $ASDF_DIR)" >> $ASDF_DIR
+    - name: asdf-cache
+      id: asdf-cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.ASDF_DIR }}
+        key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+        restore-keys: |
+          ${{ runner.os }}-asdf-
+    - name: asdf-install-tools
+      if: steps.asdf-cache.outputs.cache-hit != 'true'
+      uses: asdf-vm/actions/install@v1
