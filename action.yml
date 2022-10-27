@@ -16,7 +16,7 @@ runs:
     - name: asdf-env
       id: asdf-env
       run:
-        echo "asdf-dir=$(echo $ASDF_DIR)" >> $ASDF_DIR
+        echo "asdf-dir=$ASDF_DIR"
       shell: bash
     - name: asdf-cache
       id: asdf-cache
