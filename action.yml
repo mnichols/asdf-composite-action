@@ -8,13 +8,16 @@ runs:
   using: "composite"
   steps:
     - name: asdf-setup
+      id: asdf-setup
       # see https://github.com/asdf-vm/actions/pull/467
       uses: aeddi/asdf-actions/setup@681862213369d8d868be8a2a7d6040c4d63027db
       with:
         skip_install: true
     - name: asdf-env
+      id: asdf-env
       run:
         echo "asdf-dir=$(echo $ASDF_DIR)" >> $ASDF_DIR
+      shell: bash
     - name: asdf-cache
       id: asdf-cache
       uses: actions/cache@v2
@@ -24,5 +27,6 @@ runs:
         restore-keys: |
           ${{ runner.os }}-asdf-
     - name: asdf-install-tools
+      id: asdf-install-tools
       if: steps.asdf-cache.outputs.cache-hit != 'true'
       uses: asdf-vm/actions/install@v1
